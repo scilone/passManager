@@ -20,4 +20,6 @@ nbproject
 var
 vendor
 web/assets/vendor
-
+.idea/
+app/config/parameters.yml
+app/bootstrap.php.cache
