@@ -2,6 +2,8 @@
 
 namespace Scilone\PassManagerBundle\Entity;
 
+use Doctrine\ORM\Mapping as ORM;
+
 /**
  * Account
  *
@@ -29,9 +31,9 @@ class Account
     /**
      * @var string
      *
-     * @ORM\Column(name="user_name", type="string", length=255, nullable=true)
+     * @ORM\Column(name="username", type="string", length=255, nullable=true)
      */
-    private $userName;
+    private $username;
 
     /**
      * @var string
@@ -97,27 +99,27 @@ class Account
     }
 
     /**
-     * Set userName
+     * Set username
      *
-     * @param string $userName
+     * @param string $username
      *
      * @return Account
      */
-    public function setUserName($userName)
+    public function setusername($username)
     {
-        $this->userName = $userName;
+        $this->username = $username;
 
         return $this;
     }
 
     /**
-     * Get userName
+     * Get username
      *
      * @return string
      */
-    public function getUserName()
+    public function getusername()
     {
-        return $this->userName;
+        return $this->username;
     }
 
     /**

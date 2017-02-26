@@ -25,15 +25,21 @@
                         <span class="icon-bar"></span>
                         <span class="icon-bar"></span>
                     </button>
-                    <a class="navbar-brand" href="{{ path('scilone_pass_manager_homepage') }}">Logo</a>
+                    <a class="navbar-brand" href="{{ path('scilone_pass_manager_account_homepage') }}">Logo</a>
                 </div>
                 {% if is_granted('IS_AUTHENTICATED_FULLY') %}
                     <div class="collapse navbar-collapse" id="myNavbar">
                         <ul class="nav navbar-nav">
-                            <li class="active"><a href="#">Home</a></li>
-                            <li><a href="#">About</a></li>
-                            <li><a href="#">Projects</a></li>
-                            <li><a href="#">Contact</a></li>
+                            <li class="active">
+                                <a href="{{ path('scilone_pass_manager_account_homepage') }}">
+                                    {{ 'navbar.home'|trans|capitalize }}
+                                </a>
+                            </li>
+                            <li>
+                                <a href="{{ path('scilone_pass_manager_account_new') }}">
+                                    {{ 'navbar.add'|trans|capitalize }}
+                                </a>
+                            </li>
                         </ul>
                         <ul class="nav navbar-nav navbar-right">
                             <li>

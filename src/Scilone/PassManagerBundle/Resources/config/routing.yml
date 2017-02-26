@@ -1,3 +1,7 @@
-scilone_pass_manager_homepage:
+scilone_pass_manager_account_homepage:
     path:     /
-    defaults: { _controller: ScilonePassManagerBundle:Default:index }
+    defaults: { _controller: ScilonePassManagerBundle:Account:index }
+
+scilone_pass_manager_account_new:
+    path:     /account/new
+    defaults: { _controller: ScilonePassManagerBundle:Account:add }
