@@ -2,8 +2,6 @@
 
 namespace Scilone\PassManagerBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
-
 /**
  * Account
  *

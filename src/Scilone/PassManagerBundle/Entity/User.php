@@ -3,7 +3,6 @@
 namespace Scilone\PassManagerBundle\Entity;
 
 use FOS\UserBundle\Model\User as BaseUser;
-use Doctrine\ORM\Mapping as ORM;
 
 /**
  * @ORM\Entity
@@ -17,11 +16,6 @@ class User extends BaseUser
      * @ORM\GeneratedValue(strategy="AUTO")
      */
     protected $id;
-
-    /**
-     * @ORM\Column(name="checksum", type="string", nullable=true)
-     */
-    private $checksum;
 
     /**
      * User constructor.

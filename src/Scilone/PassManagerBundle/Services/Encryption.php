@@ -63,7 +63,7 @@ class Encryption {
         $this->mode         = $mode;
         $this->hashStrength = $hashStrength;
 
-        $this->td     = mcrypt_module_open($cipher, '', $mode, '');
+        $this->td = mcrypt_module_open($cipher, '', $mode, '');
     }
 
     /**
