@@ -1,0 +1,3 @@
+scilone_pass_manager_homepage:
+    path:     /
+    defaults: { _controller: ScilonePassManagerBundle:Default:index }

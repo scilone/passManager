@@ -1,2 +1,4 @@
-# passManager
-bundle &amp; services for share your passwords with your team
+passManager
+===========
+
+A Symfony project created on February 22, 2017, 10:02 pm.

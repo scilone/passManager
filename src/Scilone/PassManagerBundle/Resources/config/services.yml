@@ -1,0 +1,7 @@
+services:
+    scilone_pass_manager.encryption:
+        class: Scilone\PassManagerBundle\Services\Encryption
+        arguments: ["%crypt_key%", "%crypt_cipher%", "%crypt_mode%", "%crypt_strength%"]
+
+    scilone_pass_manager.generator:
+        class: Scilone\PassManagerBundle\Services\Generator

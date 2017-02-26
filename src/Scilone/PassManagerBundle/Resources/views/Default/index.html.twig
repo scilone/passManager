@@ -1,0 +1,8 @@
+{% extends "layout.html.twig" %}
+
+
+{% block body_main %}
+    Hello World!
+
+    {{ dump(is_granted('ROLE_ADMIN')) }}
+{% endblock body_main %}
