@@ -15,7 +15,7 @@ class Encryption {
     /**
      * @var array
      */
-    public static $authorizedHashStrength = array(
+    private static $authorizedHashStrength = array(
         self::HASH_STRENGTH_WEAK,
         self::HASH_STRENGTH_STANDARD,
         self::HASH_STRENGTH_STRONG
@@ -35,6 +35,11 @@ class Encryption {
      * @var string
      */
     private $mode;
+
+    /**
+     * @var string
+     */
+    private $hashStrength;
 
     /**
      * @var resource
@@ -89,6 +94,8 @@ class Encryption {
      * @return string
      */
     private function getKeyHash(string $salt):string {
+        $keyHash = null;
+
         if ($this->hashStrength === self::HASH_STRENGTH_WEAK) {
             $keyHash = md5(crypt($salt, $salt) . sha1($this->key));
             for($i=0; $i<10000; $i++){
@@ -130,21 +137,6 @@ class Encryption {
             $this->getKeyHash($salt),
             0,
             mcrypt_enc_get_block_size($this->td)
-        );
-    }
-
-    /**
-     * @param string $text
-     * @param string $salt
-     * @return string
-     */
-    private function getEncrypt(string $text, string $salt):string {
-        return mcrypt_encrypt(
-            $this->cipher,
-            $this->getKey($salt),
-            $text,
-            $this->mode,
-            $this->getIv($salt)
         );
     }
 
