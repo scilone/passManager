@@ -4,8 +4,7 @@ namespace Scilone\PassManagerBundle\Controller;
 
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Scilone\PassManagerBundle\Entity\Account;
-use Symfony\Component\Form\Extension\Core\Type\FormType;
-use Symfony\Component\Form\Extension\Core\Type;
+use Scilone\PassManagerBundle\Form\AccountType;
 
 class AccountController extends Controller
 {
@@ -25,20 +24,14 @@ class AccountController extends Controller
         );
     }
 
+    /**
+     * @return \Symfony\Component\HttpFoundation\Response
+     */
     public function addAction()
     {
         $account = new Account;
 
-        $formBuilder = $this->get('form.factory')->createBuilder(FormType::class, $account);
-        $formBuilder
-            ->add('name', Type\TextType::class)
-            ->add('username', Type\TextType::class)
-            ->add('password', Type\TextType::class)
-            ->add('url', Type\TextType::class)
-            ->add('notes', Type\TextType::class)
-            ->add('save', Type\SubmitType::class);
-
-        $form = $formBuilder->getForm();
+        $form = $this->createForm(AccountType::class, $account);
 
         return $this->render('ScilonePassManagerBundle:Account:new.html.twig', array(
             'form' => $form->createView(),

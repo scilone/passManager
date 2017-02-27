@@ -1,0 +1,3 @@
+services:
+    scilone_generator.service:
+        class: Scilone\GeneratorBundle\Services\Generator

@@ -1,0 +1,14 @@
+account:
+  name: name
+  username: username
+  password: password
+  url: url
+  notes: notes
+form:
+  account:
+    name: name
+    username: username
+    password: password
+    url: url
+    notes: notes
+    save: save

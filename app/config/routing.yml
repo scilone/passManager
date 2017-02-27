@@ -1,3 +1,11 @@
+scilone_generator:
+    resource: "@SciloneGeneratorBundle/Resources/config/routing.yml"
+    prefix:   /
+
+scilone_encryption:
+    resource: "@SciloneEncryptionBundle/Resources/config/routing.yml"
+    prefix:   /
+
 scilone_pass_manager:
     resource: "@ScilonePassManagerBundle/Resources/config/routing.yml"
     prefix:   /

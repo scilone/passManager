@@ -1,10 +1,10 @@
 <?php
 
-namespace Scilone\PassManagerBundle\Services;
+namespace Scilone\EncryptionBundle\Services;
 
 /**
  * Class Encryption
- * @package Scilone\PassManagerBundle\Services
+ * @package Scilone\EncryptionBundle\Services
  */
 class Encryption {
 

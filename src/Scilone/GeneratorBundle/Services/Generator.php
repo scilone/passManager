@@ -1,10 +1,10 @@
 <?php
 
-namespace Scilone\PassManagerBundle\Services;
+namespace Scilone\GeneratorBundle\Services;
 
 /**
  * Class Generator
- * @package Scilone\PassManagerBundle\Services
+ * @package Scilone\GeneratorBundle\Services
  */
 class Generator {
 

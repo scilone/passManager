@@ -1,9 +1,4 @@
 navbar:
   home: home
   add: add account
-account:
-  name: name
-  username: username
-  password: password
-  url: url
-  notes: notes
+
