@@ -29,12 +29,11 @@ class AccountController extends Controller
      */
     public function addAction()
     {
-        $account = new Account;
+        $form = $this->createForm(AccountType::class, new Account);
 
-        $form = $this->createForm(AccountType::class, $account);
-
-        return $this->render('ScilonePassManagerBundle:Account:new.html.twig', array(
-            'form' => $form->createView(),
-        ));
+        return $this->render(
+            'ScilonePassManagerBundle:Account:new.html.twig',
+            ['form' => $form->createView()]
+        );
     }
 }

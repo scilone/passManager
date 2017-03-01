@@ -1,0 +1,11 @@
+services:
+    scilone_encryption.service:
+        class: Scilone\EncryptionBundle\Services\Encryption
+        arguments: ["%crypt_key%", "%crypt_cipher%", "%crypt_mode%", "%crypt_strength%"]
+
+    scilone_encryption.twig_extension:
+            class: Scilone\EncryptionBundle\Twig\EncryptionExtension
+            public: false
+            arguments: ["@scilone_encryption.service"]
+            tags:
+                - { name: twig.extension }
