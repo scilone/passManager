@@ -6,6 +6,7 @@ use Symfony\Component\Form\AbstractType;
 use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
+use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
 class AccountType extends AbstractType
 {
@@ -16,43 +17,67 @@ class AccountType extends AbstractType
                 'name',
                 TextType::class,
                 [
-                    "label"=>"form.account.name",
-                    "required"=>true
+                    'label' => 'form.account.name',
+                    'attr'  => [
+                        'class'        => 'form-control',
+                        'autocomplete' => 'off'
+                    ]
                 ]
             )
             ->add(
                 'username',
                 TextType::class,
                 [
-                    "label"=>"form.account.username"
+                    'label'    =>'form.account.username',
+                    'required' => false,
+                    'attr'     => [
+                        'class'        => 'form-control',
+                        'autocomplete' => 'off'
+                    ]
                 ]
             )
             ->add(
                 'password',
-                TextType::class,
+                PasswordType::class,
                 [
-                    "label"=>"form.account.password"
+                    'label'    =>'form.account.password',
+                    'required' => false,
+                    'attr'     => [
+                        'class'        => 'form-control',
+                        'autocomplete' => 'off'
+                    ]
                 ]
             )
             ->add(
                 'url',
                 TextType::class,
                 [
-                    "label"=>"form.account.url"
+                    'label'    =>'form.account.url',
+                    'required' => false,
+                    'attr'     => [
+                        'class'        => 'form-control',
+                        'autocomplete' => 'off'
+                    ]
                 ]
             )
             ->add(
                 'notes',
                 TextType::class,
                 [
-                    "label"=>"form.account.notes"
+                    'label'    =>'form.account.notes',
+                    'required' => false,
+                    'attr'     => [
+                        'class'        => 'form-control',
+                        'autocomplete' => 'off'
+                    ]
                 ]
             )
             ->add(
                 'save',
                 SubmitType::class,
                 [
-                    "label"=>"form.account.save"
+                    'label' =>'form.account.save',
+                    'attr'  => ['class'=>'btn btn-primary pull-right']
                 ]
             );
     }
