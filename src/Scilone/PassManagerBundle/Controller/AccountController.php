@@ -9,17 +9,38 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
+/**
+ * Class AccountController
+ *
+ * @package Scilone\PassManagerBundle\Controller
+ */
 class AccountController extends Controller
 {
     /**
-     * List all accounts.
-     * @return \Symfony\Component\HttpFoundation\Response
+     * @throws \InvalidArgumentException
+     * @throws \LogicException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \Twig_Error
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     * @throws \UnexpectedValueException
+     *
+     * @return Response
      */
     public function indexAction()
     {
-        $repositoryAccount = $this->getDoctrine()
-            ->getManager()
-            ->getRepository('ScilonePassManagerBundle:Account');
+
+        if ($this->get('scilone_encryption.master_key')->askMasterKey() === true) {
+            return $this->redirectToRoute('scilone_pass_manager_ask_master_key');
+        }
+
+        $repositoryAccount =
+            $this
+                ->getDoctrine()
+                ->getManager()
+                ->getRepository('ScilonePassManagerBundle:Account');
 
         return $this->render(
             'ScilonePassManagerBundle:Account:index.html.twig',
@@ -29,6 +50,22 @@ class AccountController extends Controller
 
     /**
      * @param Request $request
+     *
+     * @throws \InvalidArgumentException
+     * @throws \LogicException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
+     * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
+     * @throws \Symfony\Component\Form\Exception\AlreadySubmittedException
+     * @throws \Symfony\Component\Form\Exception\LogicException
+     * @throws \Symfony\Component\Form\Exception\RuntimeException
+     * @throws \Symfony\Component\Form\Exception\TransformationFailedException
+     * @throws \Symfony\Component\Form\Exception\UnexpectedTypeException
+     * @throws \Twig_Error
+     * @throws \Twig_Error_Loader
+     * @throws \Twig_Error_Runtime
+     * @throws \Twig_Error_Syntax
+     * @throws \UnexpectedValueException
+     *
      * @return RedirectResponse|Response
      */
     public function addAction(Request $request)

@@ -2,11 +2,16 @@
 
 namespace Scilone\EncryptionBundle\Services;
 
+use Symfony\Component\HttpFoundation\Session\Session;
+use Scilone\EncryptionBundle\Services\MasterKey;
+
 /**
  * Class Encryption
+ *
  * @package Scilone\EncryptionBundle\Services
  */
-class Encryption {
+class Encryption
+{
 
     const HASH_STRENGTH_WEAK     = 'weak';
     const HASH_STRENGTH_STANDARD = 'standard';
@@ -48,17 +53,19 @@ class Encryption {
 
     /**
      * Encryption constructor.
-     * @param string $key
+     *
      * @param string $cipher
      * @param string $mode
      * @param string $hashStrength
      */
-    public function __construct(string $key, string $cipher, string $mode, string $hashStrength) {
+    public function __construct(string $cipher, string $mode, string $hashStrength)
+    {
         if (in_array($hashStrength, self::$authorizedHashStrength) === false) {
             $hashStrength = self::HASH_STRENGTH_STANDARD;
         }
 
-        $this->key          = $key;
+        $this->refreshKey();
+
         $this->cipher       = $cipher;
         $this->mode         = $mode;
         $this->hashStrength = $hashStrength;
@@ -69,10 +76,13 @@ class Encryption {
     /**
      * @param string $text
      * @param string $salt
+     *
      * @return string
      */
-    public function crypt(string $text, string $salt): string
+    public function crypt(string $text, string $salt) :string
     {
+        $this->refreshKey();
+
         return base64_encode(
             $this->mcryptEncrypt($text, $salt)
         );
@@ -81,34 +91,62 @@ class Encryption {
     /**
      * @param string $textCrypt
      * @param string $salt
+     *
      * @return string
      */
-    public function decrypt(string $textCrypt, string $salt):string {
+    public function decrypt(string $textCrypt, string $salt) :string
+    {
+        $this->refreshKey();
+
         return rtrim(
             $this->mcryptDecrypt(base64_decode($textCrypt), $salt)
         );
     }
 
     /**
+     * @param string $text
+     * @param string $textCrypt
      * @param string $salt
+     *
+     * @return bool
+     */
+    public function isValidEncryption(string $text, string $textCrypt, string $salt) :bool
+    {
+        return $text === $this->decrypt($textCrypt, $salt);
+    }
+
+    /**
+     * refresh the key from the session
+     */
+    private function refreshKey()
+    {
+        $session = new Session;
+
+        $this->key = $session->get(MasterKey::SESSION_NAME_MASTER_KEY);
+    }
+
+    /**
+     * @param string $salt
+     *
      * @return string
      */
-    private function getKeyHash(string $salt):string {
+    public function getKeyHash(string $salt) :string
+    {
         $keyHash = null;
 
         if ($this->hashStrength === self::HASH_STRENGTH_WEAK) {
             $keyHash = md5(crypt($salt, $salt) . sha1($this->key));
-            for($i=0; $i<10000; $i++){
+            for ($i = 0; $i < 10000; $i ++) {
                 $keyHash = md5(sha1(crypt($keyHash, $salt)));
             }
         } elseif ($this->hashStrength === self::HASH_STRENGTH_STANDARD) {
             $keyHash = sha1(md5($salt) . crypt($this->key, $salt));
-            for($i=0; $i<50000; $i++){
+            for ($i = 0; $i < 50000; $i ++) {
                 $keyHash = sha1(md5(crypt($keyHash, $salt)));
             }
         } elseif ($this->hashStrength === self::HASH_STRENGTH_STRONG) {
             $keyHash = sha1(crypt(sha1($salt) . md5($this->key), $salt));
-            for($i=0; $i<100000; $i++){
+            for ($i = 0; $i < 100000; $i ++) {
                 $keyHash = sha1(crypt(md5(sha1($keyHash)), $salt));
             }
         }
@@ -118,9 +156,11 @@ class Encryption {
 
     /**
      * @param string $salt
+     *
      * @return string
      */
-    private function getKey(string $salt):string {
+    private function getKey(string $salt) :string
+    {
         return substr(
             $this->getKeyHash($salt),
             0,
@@ -130,9 +170,11 @@ class Encryption {
 
     /**
      * @param string $salt
+     *
      * @return string
      */
-    private function getIv(string $salt):string {
+    private function getIv(string $salt) :string
+    {
         return substr(
             $this->getKeyHash($salt),
             0,
@@ -143,9 +185,11 @@ class Encryption {
     /**
      * @param string $text
      * @param string $salt
+     *
      * @return string
      */
-    private function mcryptEncrypt(string $text, string $salt):string {
+    private function mcryptEncrypt(string $text, string $salt) :string
+    {
         return mcrypt_encrypt(
             $this->cipher,
             $this->getKey($salt),
@@ -158,9 +202,11 @@ class Encryption {
     /**
      * @param string $text
      * @param string $salt
+     *
      * @return string
      */
-    private function mcryptDecrypt(string $text, string $salt):string {
+    private function mcryptDecrypt(string $text, string $salt) :string
+    {
         return mcrypt_decrypt(
             $this->cipher,
             $this->getKey($salt),

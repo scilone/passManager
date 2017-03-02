@@ -5,3 +5,7 @@ scilone_pass_manager_account_homepage:
 scilone_pass_manager_account_new:
     path:     /account/new
     defaults: { _controller: ScilonePassManagerBundle:Account:add }
+
+scilone_pass_manager_ask_master_key:
+    path:     /masterKey/set
+    defaults: { _controller: ScilonePassManagerBundle:MasterKey:set }

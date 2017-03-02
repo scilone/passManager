@@ -18,7 +18,6 @@ parameters:
     # A secret key that's used to generate certain security-related tokens
     secret:            ThisTokenIsNotSoSecretChangeIt
 
-    crypt_key: ThisCryptKeyIsNotSoGoodChangeIt
     crypt_cipher: rijndael-256
     crypt_mode: cbc
     crypt_strength: strong
