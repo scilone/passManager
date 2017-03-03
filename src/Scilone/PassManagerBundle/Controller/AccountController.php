@@ -32,7 +32,7 @@ class AccountController extends Controller
     public function indexAction()
     {
         if ($this->get('scilone_encryption.master_key')->askMasterKey() === true) {
-            return $this->redirectToRoute('scilone_pass_manager_ask_master_key');
+            return $this->redirectToRoute('scilone_encryption_set_master_key');
         }
 
         $repositoryAccount =

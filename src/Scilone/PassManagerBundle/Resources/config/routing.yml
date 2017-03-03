@@ -5,4 +5,3 @@ scilone_pass_manager_account_homepage:
 scilone_pass_manager_account_new:
     path:     /account/new
     defaults: { _controller: ScilonePassManagerBundle:Account:add }
-

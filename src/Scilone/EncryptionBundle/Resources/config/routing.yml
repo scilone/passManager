@@ -1,4 +1,10 @@
 
-scilone_pass_manager_ask_master_key:
+scilone_encryption_set_master_key:
     path:     /masterKey/set
     defaults: { _controller: SciloneEncryptionBundle:MasterKey:set }
+
+scilone_encryption_xhr_decrypt:
+    path:     /xhr/decrypt/{salt}/{text}
+    defaults: { _controller: SciloneEncryptionBundle:Encryption:xhrDecrypt }
+    options:
+        expose: true
