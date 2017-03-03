@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-<!--test-->
 <html>
     <head>
         <meta charset="UTF-8"/>
@@ -84,11 +83,9 @@
                 </div>
                 <div class="col-sm-8 text-left">
                     {% block fos_user_content %}
-
                     {% endblock fos_user_content %}
 
                     {% block body_main %}
-
                     {% endblock %}
                 </div>
                 <div class="col-sm-2 sidenav">
@@ -96,5 +93,8 @@
                 </div>
             </div>
         </div>
+
+        {% block javascript %}
+        {% endblock %}
     </body>
 </html>

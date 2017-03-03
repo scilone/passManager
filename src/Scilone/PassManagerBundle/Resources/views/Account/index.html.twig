@@ -7,6 +7,7 @@
                 <th>{{ 'account.name'|trans }}</th>
                 <th>{{ 'account.username'|trans }}</th>
                 <th>{{ 'account.password'|trans }}</th>
+                <th></th>
                 <th>{{ 'account.url'|trans }}</th>
                 <th>{{ 'account.notes'|trans }}</th>
             </tr>
@@ -16,11 +17,37 @@
                 <tr>
                     <td>{{ account.name }}</td>
                     <td>{{ account.userName }}</td>
-                    <td>{{ account.password }}</td>
-                    <td>{{ account.url }}</td>
+                    <td>
+                        <span class="fakePassword"><small>**********</small></span>
+                        <span class="passwordHidden">{{ account.password|decrypt(account.salt) }}</span>
+                    </td>
+                    <td>
+                        <button type="button" class="btn btn-default btn-pass" aria-label="Left Align">
+                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                        </button>
+                    </td>
+                    <td>
+                        <a href="{{ account.url }}" target="_blank" rel="noreferrer">
+                            {{ account.url }}
+                        </a>
+                    </td>
                     <td>{{ account.notes }}</td>
                 </tr>
             {% endfor %}
         </tbody>
     </table>
 {% endblock body_main %}
+
+{% block javascript %}
+    {% javascripts '@ScilonePassManagerBundle/Resources/public/js/index.js' %}
+        <script src="{{ asset_url }}"></script>
+    {% endjavascripts %}
+{% endblock javascript %}
+
+{% block stylesheets %}
+    {{ parent() }}
+
+    {% stylesheets '@ScilonePassManagerBundle/Resources/public/css/index.css' filter='cssrewrite' %}
+        <link rel="stylesheet" href="{{ asset_url }}" />
+    {% endstylesheets %}
+{% endblock stylesheets %}

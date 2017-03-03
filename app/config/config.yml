@@ -77,3 +77,9 @@ fos_user:
     from_email:
             address: noreply@scilone.com
             sender_name: scilone
+
+assetic:
+    debug:          '%kernel.debug%'
+    use_controller: '%kernel.debug%'
+    filters:
+        cssrewrite: ~

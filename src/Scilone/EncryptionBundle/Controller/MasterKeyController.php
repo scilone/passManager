@@ -194,6 +194,9 @@ class MasterKeyController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($masterKey);
 
+            // congratulations!
+            $this->getUser()->addRole('ROLE_ADMIN');
+
             $em->flush();
 
             return true;
