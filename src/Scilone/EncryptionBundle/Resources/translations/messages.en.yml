@@ -1,3 +1,5 @@
 form:
   masterKey:
     textCrypt: Enter your master key
+    error: Probleme while with your master key, try again.
+    save: Valid

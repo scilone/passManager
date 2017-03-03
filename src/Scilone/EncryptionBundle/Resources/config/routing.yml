@@ -1,1 +1,4 @@
 
+scilone_pass_manager_ask_master_key:
+    path:     /masterKey/set
+    defaults: { _controller: SciloneEncryptionBundle:MasterKey:set }

@@ -1,14 +1,27 @@
 services:
     scilone_encryption.service:
         class: Scilone\EncryptionBundle\Services\Encryption
-        arguments: ["%crypt_cipher%", "%crypt_mode%", "%crypt_strength%"]
+        arguments:
+            - "@scilone_encryption.master_key"
+            - "%crypt_cipher%"
+            - "%crypt_mode%"
+            - "%crypt_strength%"
 
     scilone_encryption.master_key:
         class: Scilone\EncryptionBundle\Services\MasterKey
+        arguments:
+            - '@scilone_encryption.master_key_repository'
 
     scilone_encryption.twig_extension:
-            class: Scilone\EncryptionBundle\Twig\EncryptionExtension
-            public: false
-            arguments: ["@scilone_encryption.service"]
-            tags:
-                - { name: twig.extension }
+        class: Scilone\EncryptionBundle\Twig\EncryptionExtension
+        public: false
+        arguments:
+            - '@scilone_encryption.service'
+        tags:
+            - { name: twig.extension }
+
+    scilone_encryption.master_key_repository:
+        class: Doctrine\ORM\EntityRepository
+        factory: 'doctrine.orm.entity_manager:getRepository'
+        arguments:
+            - Scilone\EncryptionBundle\Entity\MasterKey

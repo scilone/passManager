@@ -7,8 +7,17 @@ use Symfony\Component\Form\FormBuilderInterface;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
+/**
+ * Class MasterKeyType
+ *
+ * @package Scilone\EncryptionBundle\Form
+ */
 class MasterKeyType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder
@@ -27,7 +36,7 @@ class MasterKeyType extends AbstractType
                 'save',
                 SubmitType::class,
                 [
-                    'label' =>'form.account.save',
+                    'label' =>'form.masterKey.save',
                     'attr'  => ['class'=>'btn btn-primary pull-right']
                 ]
             );

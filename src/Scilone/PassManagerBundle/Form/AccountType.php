@@ -8,8 +8,17 @@ use Symfony\Component\Form\Extension\Core\Type\TextType;
 use Symfony\Component\Form\Extension\Core\Type\SubmitType;
 use Symfony\Component\Form\Extension\Core\Type\PasswordType;
 
+/**
+ * Class AccountType
+ *
+ * @package Scilone\PassManagerBundle\Form
+ */
 class AccountType extends AbstractType
 {
+    /**
+     * @param FormBuilderInterface $builder
+     * @param array                $options
+     */
     public function buildForm(FormBuilderInterface $builder, array $options)
     {
         $builder

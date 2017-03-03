@@ -218,4 +218,3 @@ class Account
         return $this->notes;
     }
 }
-

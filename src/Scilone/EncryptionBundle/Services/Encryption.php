@@ -2,9 +2,6 @@
 
 namespace Scilone\EncryptionBundle\Services;
 
-use Symfony\Component\HttpFoundation\Session\Session;
-use Scilone\EncryptionBundle\Services\MasterKey;
-
 /**
  * Class Encryption
  *
@@ -12,7 +9,6 @@ use Scilone\EncryptionBundle\Services\MasterKey;
  */
 class Encryption
 {
-
     const HASH_STRENGTH_WEAK     = 'weak';
     const HASH_STRENGTH_STANDARD = 'standard';
     const HASH_STRENGTH_STRONG   = 'strong';
@@ -27,9 +23,9 @@ class Encryption
     );
 
     /**
-     * @var string
+     * @var MasterKey
      */
-    private $key;
+    private $masterKey;
 
     /**
      * @var string
@@ -54,18 +50,18 @@ class Encryption
     /**
      * Encryption constructor.
      *
-     * @param string $cipher
-     * @param string $mode
-     * @param string $hashStrength
+     * @param MasterKey $masterKey
+     * @param string    $cipher
+     * @param string    $mode
+     * @param string    $hashStrength
      */
-    public function __construct(string $cipher, string $mode, string $hashStrength)
+    public function __construct(MasterKey $masterKey, string $cipher, string $mode, string $hashStrength)
     {
         if (in_array($hashStrength, self::$authorizedHashStrength) === false) {
             $hashStrength = self::HASH_STRENGTH_STANDARD;
         }
 
-        $this->refreshKey();
-
+        $this->masterKey    = $masterKey;
         $this->cipher       = $cipher;
         $this->mode         = $mode;
         $this->hashStrength = $hashStrength;
@@ -81,8 +77,6 @@ class Encryption
      */
     public function crypt(string $text, string $salt) :string
     {
-        $this->refreshKey();
-
         return base64_encode(
             $this->mcryptEncrypt($text, $salt)
         );
@@ -96,8 +90,6 @@ class Encryption
      */
     public function decrypt(string $textCrypt, string $salt) :string
     {
-        $this->refreshKey();
-
         return rtrim(
             $this->mcryptDecrypt(base64_decode($textCrypt), $salt)
         );
@@ -116,36 +108,29 @@ class Encryption
     }
 
     /**
-     * refresh the key from the session
-     */
-    private function refreshKey()
-    {
-        $session = new Session;
-
-        $this->key = $session->get(MasterKey::SESSION_NAME_MASTER_KEY);
-    }
-
-    /**
      * @param string $salt
      *
      * @return string
      */
     public function getKeyHash(string $salt) :string
     {
+        ini_set('memory_limit', '2056M');
+
         $keyHash = null;
+        $masterKey = $this->masterKey->get();
 
         if ($this->hashStrength === self::HASH_STRENGTH_WEAK) {
-            $keyHash = md5(crypt($salt, $salt) . sha1($this->key));
+            $keyHash = md5(crypt($salt, $salt) . sha1($masterKey));
             for ($i = 0; $i < 10000; $i ++) {
                 $keyHash = md5(sha1(crypt($keyHash, $salt)));
             }
         } elseif ($this->hashStrength === self::HASH_STRENGTH_STANDARD) {
-            $keyHash = sha1(md5($salt) . crypt($this->key, $salt));
+            $keyHash = sha1(md5($salt) . crypt($masterKey, $salt));
             for ($i = 0; $i < 50000; $i ++) {
                 $keyHash = sha1(md5(crypt($keyHash, $salt)));
             }
         } elseif ($this->hashStrength === self::HASH_STRENGTH_STRONG) {
-            $keyHash = sha1(crypt(sha1($salt) . md5($this->key), $salt));
+            $keyHash = sha1(crypt(sha1($salt) . md5($masterKey), $salt));
             for ($i = 0; $i < 100000; $i ++) {
                 $keyHash = sha1(crypt(md5(sha1($keyHash)), $salt));
             }
