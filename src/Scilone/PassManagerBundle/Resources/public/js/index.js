@@ -7,28 +7,10 @@ $(document).ready(function () {
 		//show password
 		if (elBtn.hasClass('glyphicon-eye-open')) {
 			if (elPassword.data('decrypt') == 0) {
-				$('#layoutLoading').attr('style', 'display:block;');
-
-				$.ajax({
-					method: "GET",
-					async: true,
-					url: Routing.generate(
-						'scilone_encryption_xhr_decrypt',
-						{'text': elPassword.data('password'), 'salt': elPassword.data('salt')}
-					),
-					success: function (msg) {
-						elPassword.data('decrypt', 1);
-						elPassword.html(msg);
-					}
-				}).done(function( data ) {
-					$('#layoutLoading').hide();
-
-					showPassword(elFakePass, elPassword, elBtn);
-				});
+				getPassword(elFakePass, elPassword, elBtn, true);
 			}
-			else{
-				showPassword(elFakePass, elPassword, elBtn);
-			}
+
+			showPassword(elFakePass, elPassword, elBtn);
 		}
 		else {
 			elPassword.hide();
@@ -38,10 +20,20 @@ $(document).ready(function () {
 		}
 	});
 
-	$('.btn-copy').click(function () {
-		$(this).closest('tr').find('td:eq(0)').select();
-		document.execCommand( 'copy' );
-		return false;
+	new Clipboard('.btn-copy', {
+		text: function(trigger) {
+			console.warn('copy!');
+
+			var elBtn = $(trigger).find('span'),
+				elPassword = $(trigger).closest('tr').find('.passwordHidden'),
+				elFakePass = $(trigger).closest('tr').find('.fakePassword');
+
+			if (elPassword.data('decrypt') == 0) {
+				getPassword(elFakePass, elPassword, elBtn, true);
+			}
+
+			return elPassword.html();
+		}
 	});
 });
 
@@ -50,4 +42,26 @@ function showPassword(elFakePass, elPassword, elBtn){
 	elPassword.show();
 	elBtn.removeClass('glyphicon-eye-open');
 	elBtn.addClass('glyphicon-eye-close');
+}
+
+function getPassword(elFakePass, elPassword, elBtn, overlayEffect) {
+	$('#layoutLoading').attr('style', 'display:block;');
+
+	$.ajax({
+		method: "GET",
+		async: true,
+		url: Routing.generate(
+			'scilone_encryption_xhr_decrypt',
+			{'text': elPassword.data('password'), 'salt': elPassword.data('salt')}
+		),
+		success: function (msg) {
+			elPassword.data('decrypt', 1);
+			elPassword.html(msg);
+
+			setTimeout(function(){ elBtn.click(); }, 3000);
+
+		}
+	}).done(function (data) {
+		$('#layoutLoading').hide();
+	});
 }
