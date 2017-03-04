@@ -19,8 +19,9 @@ use Symfony\Component\Form\Form;
 class EncryptionController extends Controller
 {
 
-    public function xhrDecryptAction(string $salt, string $text)
+    public function xhrDecryptAction(Request $request, string $salt)
     {
+        $text = $request->get('text');
         return new JsonResponse($this->get('scilone_encryption.service')->decrypt($text, $salt));
     }
 }

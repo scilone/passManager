@@ -20,7 +20,7 @@ $(document).ready(function () {
 		}
 	});
 
-	new Clipboard('.btn-copy', {
+	/*new Clipboard('.btn-copy', {
 		text: function(trigger) {
 			console.warn('copy!');
 
@@ -34,7 +34,7 @@ $(document).ready(function () {
 
 			return elPassword.html();
 		}
-	});
+	});*/
 });
 
 function showPassword(elFakePass, elPassword, elBtn){
@@ -52,14 +52,11 @@ function getPassword(elFakePass, elPassword, elBtn, overlayEffect) {
 		async: true,
 		url: Routing.generate(
 			'scilone_encryption_xhr_decrypt',
-			{'text': elPassword.data('password'), 'salt': elPassword.data('salt')}
-		),
+			{'salt': elPassword.data('salt')}
+		) + '?text=' + elPassword.data('password'),
 		success: function (msg) {
 			elPassword.data('decrypt', 1);
 			elPassword.html(msg);
-
-			setTimeout(function(){ elBtn.click(); }, 3000);
-
 		}
 	}).done(function (data) {
 		$('#layoutLoading').hide();
