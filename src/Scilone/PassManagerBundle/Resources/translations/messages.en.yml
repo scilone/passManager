@@ -4,6 +4,7 @@ account:
   password: password
   url: url
   notes: notes
+  rights: rights
 form:
   account:
     name: name

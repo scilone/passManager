@@ -1,0 +1,7 @@
+services:
+    scilone_acl.user:
+        class: Scilone\AclBundle\Services\AclUser
+        arguments:
+            - "@security.acl.provider"
+            - "@security.authorization_checker"
+            - "@security.token_storage"

@@ -11,6 +11,7 @@
                 <th></th>
                 <th>{{ 'account.url'|trans }}</th>
                 <th>{{ 'account.notes'|trans }}</th>
+                <th>{{ 'account.rights'|trans }}</th>
             </tr>
         </thead>
         <tbody>
@@ -31,7 +32,7 @@
                             <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
                         </button>
                         <!--button type="button" class="btn btn-default btn-copy" aria-label="Left Align">
-                            <span class="glyphicon glyphicon glyphicon-copy" aria-hidden="true"></span>
+                            <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
                         </button-->
                     </td>
                     <td>
@@ -40,6 +41,11 @@
                         </a>
                     </td>
                     <td>{{ account.notes }}</td>
+                    <td>
+                        <button type="button" class="btn btn-default" aria-label="Left Align">
+                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                        </button>
+                    </td>
                 </tr>
             {% endfor %}
         </tbody>

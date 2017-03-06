@@ -21,6 +21,7 @@ class AppKernel extends Kernel
             new Scilone\GeneratorBundle\SciloneGeneratorBundle(),
             new Symfony\Bundle\AsseticBundle\AsseticBundle(),
             new FOS\JsRoutingBundle\FOSJsRoutingBundle(),
+            new Scilone\AclBundle\SciloneAclBundle(),
         ];
 
         if (in_array($this->getEnvironment(), ['dev', 'test'], true)) {
