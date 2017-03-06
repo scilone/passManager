@@ -13,8 +13,8 @@ use Symfony\Component\Security\Acl\Exception\NoAceFoundException;
 use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 use Symfony\Component\Security\Acl\Model\AclInterface;
 use Symfony\Component\Security\Acl\Model\MutableAclInterface;
-use Symfony\Component\Security\Acl\Domain\Acl;
-use Symfony\Component\Security\Acl\Domain\Entry;
+
+
 use Scilone\PassManagerBundle\Entity\User;
 
 /**
@@ -69,8 +69,11 @@ class AclUser
      * @param AuthorizationChecker $authorizationChecker
      * @param TokenStorage         $tokenStorage
      */
-    public function __construct(MutableAclProvider $aclProvider, AuthorizationChecker $authorizationChecker, TokenStorage $tokenStorage)
-    {
+    public function __construct(
+        MutableAclProvider $aclProvider,
+        AuthorizationChecker $authorizationChecker,
+        TokenStorage $tokenStorage
+    ) {
         $this->aclProvider          = $aclProvider;
         $this->authorizationChecker = $authorizationChecker;
         $this->tokenStorage         = $tokenStorage;
@@ -85,7 +88,7 @@ class AclUser
      */
     public function isGranted(int $attribute, $object, User $user = null) :bool
     {
-        if ($this->isValidAttribute($attribute)) {
+        if ($this->isValidAttribute($attribute) === false) {
             return false;
         }
 
@@ -101,18 +104,14 @@ class AclUser
     }
 
     /**
-     * @param string $attribute
-     * @param        $object
-     * @param User   $user
+     * @param int $attribute
+     * @param $object
+     * @param User $user
      *
      * @return bool
      */
-    private function isGrantedUser(string $attribute, $object, User $user) :bool
+    private function isGrantedUser(int $attribute, $object, User $user) :bool
     {
-        if ($this->isValidAttribute($attribute)) {
-            return false;
-        }
-
         try {
             $objectIdentity   = ObjectIdentity::fromDomainObject($object);
             $securityIdentity = UserSecurityIdentity::fromAccount($user);
@@ -128,25 +127,12 @@ class AclUser
             return false;
         }
 
-        if (!is_int($attribute)) {
-            $builder = new MaskBuilder;
-
-            try {
-                $builder->add($attribute);
-            } catch (\InvalidArgumentException $invalidArgumentException) {
-                return false;
-            }
-
-            $attribute = $builder->get();
-        }
-
         try {
             return $acl->isGranted([$attribute], [$securityIdentity], false);
         } catch (NoAceFoundException $e) {
             return false;
         }
     }
-
 
     /**
      * @param int       $attribute
@@ -161,11 +147,12 @@ class AclUser
      * @throws \RuntimeException
      * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
      * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
+     *
      * @return bool
      */
     public function grant(int $attribute, $object, User $user = null) :bool
     {
-        if ($this->isValidAttribute($attribute)) {
+        if ($this->isValidAttribute($attribute) === false) {
             return false;
         }
 
@@ -180,7 +167,6 @@ class AclUser
         // retrieving the security identity of the currently logged-in user
         $securityIdentity = UserSecurityIdentity::fromAccount($user);
 
-        // grant owner access
         $acl->insertObjectAce($securityIdentity, $attribute);
         $this->aclProvider->updateAcl($acl);
 
@@ -236,11 +222,12 @@ class AclUser
      * @throws \RuntimeException
      * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
      * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
+     *
      * @return bool
      */
     public function remove(int $attribute, $object, User $user = null)
     {
-        if ($this->isValidAttribute($attribute)) {
+        if ($this->isValidAttribute($attribute) === false) {
             return false;
         }
 
@@ -251,29 +238,14 @@ class AclUser
         $securityIdentity = UserSecurityIdentity::fromAccount($user);
 
         foreach ($aces as $i => $ace) {
+            /** @noinspection PhpUndefinedMethodInspection */
             if ($securityIdentity->equals($ace->getSecurityIdentity())) {
-                $this->revokeMask($i, $acl, $ace, $attribute);
+                /** @noinspection PhpUndefinedMethodInspection */
+                $acl->updateObjectAce($i, $ace->getMask() & ~$attribute);
             }
         }
 
         $this->aclProvider->updateAcl($acl);
-
-        return true;
-    }
-
-    /**
-     * @param int   $index
-     * @param Acl   $acl
-     * @param Entry $ace
-     * @param int   $attribute
-     *
-     * @throws \OutOfBoundsException
-     *
-     * @return bool
-     */
-    private function revokeMask(int $index, Acl $acl, Entry $ace, int $attribute) :bool
-    {
-        $acl->updateObjectAce($index, $ace->getMask() & ~$attribute);
 
         return true;
     }
