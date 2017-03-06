@@ -33,6 +33,9 @@ class AclUser
     const MASK_MASTER   = MaskBuilder::MASK_MASTER;
     const MASK_OWNER    = MaskBuilder::MASK_OWNER;
 
+    /**
+     * @var array
+     */
     private static $maskAuth = [
         self::MASK_VIEW,
         self::MASK_CREATE,
@@ -74,7 +77,7 @@ class AclUser
     }
 
     /**
-     * @param string    $attribute
+     * @param int       $attribute
      * @param           $object
      * @param User|null $user
      *
@@ -145,6 +148,21 @@ class AclUser
     }
 
 
+    /**
+     * @param int       $attribute
+     * @param           $object
+     * @param User|null $user
+     *
+     * @throws AclNotFoundException
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     * @throws \InvalidArgumentException
+     * @throws \RuntimeException
+     * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
+     * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
+     * @return bool
+     */
     public function grant(int $attribute, $object, User $user = null) :bool
     {
         if ($this->isValidAttribute($attribute)) {
@@ -169,7 +187,12 @@ class AclUser
         return true;
     }
 
-    private function getRightUser($user = null)
+    /**
+     * @param User|null $user
+     *
+     * @return User
+     */
+    private function getRightUser(User $user = null) :User
     {
         if ($user === null) {
             return $this->tokenStorage->getToken()->getUser();
@@ -199,6 +222,22 @@ class AclUser
         }
     }
 
+    /**
+     * @param int       $attribute
+     * @param           $object
+     * @param User|null $user
+     *
+     * @throws AclNotFoundException
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     * @throws \InvalidArgumentException
+     * @throws \OutOfBoundsException
+     * @throws \RuntimeException
+     * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
+     * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
+     * @return bool
+     */
     public function remove(int $attribute, $object, User $user = null)
     {
         if ($this->isValidAttribute($attribute)) {
