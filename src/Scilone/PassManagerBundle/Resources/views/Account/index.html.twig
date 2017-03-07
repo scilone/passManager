@@ -16,37 +16,39 @@
         </thead>
         <tbody>
             {% for account in accounts %}
-                <tr>
-                    <td>{{ account.name }}</td>
-                    <td>{{ account.userName }}</td>
-                    <td>
-                        <span class="fakePassword"><small>**********</small></span>
-                        <span class="passwordHidden"
-                              data-password="{{ account.password }}"
-                              data-salt="{{ account.salt }}"
-                              data-decrypt="0"
-                        ></span>
-                    </td>
-                    <td>
-                        <button type="button" class="btn btn-default btn-pass" aria-label="Left Align">
-                            <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
-                        </button>
-                        <!--button type="button" class="btn btn-default btn-copy" aria-label="Left Align">
-                            <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
-                        </button-->
-                    </td>
-                    <td>
-                        <a href="{{ account.url }}" target="_blank" rel="noreferrer">
-                            {{ account.url }}
-                        </a>
-                    </td>
-                    <td>{{ account.notes }}</td>
-                    <td>
-                        <button type="button" class="btn btn-default" aria-label="Left Align">
-                            <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
-                        </button>
-                    </td>
-                </tr>
+                {% if isAclGranted(constant('Scilone\\AclBundle\\Services\\AclUser::MASK_VIEW'), account) %}
+                    <tr>
+                        <td>{{ account.name }}</td>
+                        <td>{{ account.userName }}</td>
+                        <td>
+                            <span class="fakePassword"><small>**********</small></span>
+                            <span class="passwordHidden"
+                                  data-password="{{ account.password|url_encode }}"
+                                  data-salt="{{ account.salt }}"
+                                  data-decrypt="0"
+                            ></span>
+                        </td>
+                        <td>
+                            <button type="button" class="btn btn-default btn-pass" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-eye-open" aria-hidden="true"></span>
+                            </button>
+                            <!--button type="button" class="btn btn-default btn-copy" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-copy" aria-hidden="true"></span>
+                            </button-->
+                        </td>
+                        <td>
+                            <a href="{{ account.url }}" target="_blank" rel="noreferrer">
+                                {{ account.url }}
+                            </a>
+                        </td>
+                        <td>{{ account.notes }}</td>
+                        <td>
+                            <button type="button" class="btn btn-default" aria-label="Left Align">
+                                <span class="glyphicon glyphicon-user" aria-hidden="true"></span>
+                            </button>
+                        </td>
+                    </tr>
+                {% endif %}
             {% endfor %}
         </tbody>
     </table>

@@ -4,7 +4,7 @@ scilone_encryption_set_master_key:
     defaults: { _controller: SciloneEncryptionBundle:MasterKey:set }
 
 scilone_encryption_xhr_decrypt:
-    path:     /xhr/decrypt/{salt}
+    path:     /xhr/decrypt/{text}/{salt}
     defaults: { _controller: SciloneEncryptionBundle:Encryption:xhrDecrypt }
     options:
         expose: true

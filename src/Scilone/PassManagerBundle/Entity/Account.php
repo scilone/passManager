@@ -2,7 +2,8 @@
 
 namespace Scilone\PassManagerBundle\Entity;
 
-use Doctrine\ORM\Mapping as ORM;
+use /** @noinspection PhpUnusedAliasInspection */
+    Doctrine\ORM\Mapping as ORM;
 
 /**
  * Account

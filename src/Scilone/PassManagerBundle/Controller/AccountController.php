@@ -9,7 +9,6 @@ use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
 
-
 /**
  * Class AccountController
  *
@@ -51,8 +50,12 @@ class AccountController extends Controller
     /**
      * @param Request $request
      *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
      * @throws \InvalidArgumentException
      * @throws \LogicException
+     * @throws \RuntimeException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceCircularReferenceException
      * @throws \Symfony\Component\DependencyInjection\Exception\ServiceNotFoundException
      * @throws \Symfony\Component\Form\Exception\AlreadySubmittedException
@@ -60,6 +63,9 @@ class AccountController extends Controller
      * @throws \Symfony\Component\Form\Exception\RuntimeException
      * @throws \Symfony\Component\Form\Exception\TransformationFailedException
      * @throws \Symfony\Component\Form\Exception\UnexpectedTypeException
+     * @throws \Symfony\Component\Security\Acl\Exception\AclNotFoundException
+     * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
+     * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
      * @throws \Twig_Error
      * @throws \Twig_Error_Loader
      * @throws \Twig_Error_Runtime
@@ -89,6 +95,9 @@ class AccountController extends Controller
             $em = $this->getDoctrine()->getManager();
             $em->persist($account);
             $em->flush();
+
+            $acl = $this->get('scilone_acl.user');
+            $acl->grant($acl::MASK_OWNER, $account);
 
             return $this->redirectToRoute(
                 'scilone_pass_manager_account_homepage',

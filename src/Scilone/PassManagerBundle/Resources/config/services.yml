@@ -1,6 +1,6 @@
 services:
     scilone_pass_manager.twig_extension:
-                class: Scilone\PassManagerBundle\Twig\NavbarExtension
-                public: false
-                tags:
-                    - { name: twig.extension }
+        class: Scilone\PassManagerBundle\Twig\NavbarExtension
+        public: false
+        tags:
+            - { name: twig.extension }

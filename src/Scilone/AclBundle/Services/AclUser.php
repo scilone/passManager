@@ -10,12 +10,10 @@ use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Acl\Exception\NoAceFoundException;
-use Symfony\Component\Security\Core\Exception\AuthenticationCredentialsNotFoundException;
 use Symfony\Component\Security\Acl\Model\AclInterface;
 use Symfony\Component\Security\Acl\Model\MutableAclInterface;
-
-
 use Scilone\PassManagerBundle\Entity\User;
+use Symfony\Component\Security\Acl\Model\EntryInterface;
 
 /**
  * Class Encryption
@@ -24,6 +22,8 @@ use Scilone\PassManagerBundle\Entity\User;
  */
 class AclUser
 {
+    //@TODO refacto class, split set rights and get them
+
     const MASK_VIEW     = MaskBuilder::MASK_VIEW;
     const MASK_CREATE   = MaskBuilder::MASK_CREATE;
     const MASK_EDIT     = MaskBuilder::MASK_EDIT;
@@ -32,6 +32,10 @@ class AclUser
     const MASK_OPERATOR = MaskBuilder::MASK_OPERATOR;
     const MASK_MASTER   = MaskBuilder::MASK_MASTER;
     const MASK_OWNER    = MaskBuilder::MASK_OWNER;
+
+    const EQUAL = 'equal';
+    const ALL = 'all';
+    const ANY = 'any';
 
     /**
      * @var array
@@ -92,26 +96,8 @@ class AclUser
             return false;
         }
 
-        if ($user !== null) {
-            return $this->isGrantedUser($attribute, $object, $user);
-        }
+        $user = $this->getRightUser($user);
 
-        try {
-            return $this->authorizationChecker->isGranted($attribute, $object);
-        } catch (AuthenticationCredentialsNotFoundException $authenticationCredentialsNotFoundException) {
-            return false;
-        }
-    }
-
-    /**
-     * @param int $attribute
-     * @param $object
-     * @param User $user
-     *
-     * @return bool
-     */
-    private function isGrantedUser(int $attribute, $object, User $user) :bool
-    {
         try {
             $objectIdentity   = ObjectIdentity::fromDomainObject($object);
             $securityIdentity = UserSecurityIdentity::fromAccount($user);
@@ -128,8 +114,10 @@ class AclUser
         }
 
         try {
-            return $acl->isGranted([$attribute], [$securityIdentity], false);
-        } catch (NoAceFoundException $e) {
+            return $this->isGrantedAcl($acl, $attribute, $securityIdentity);
+        } catch (NoAceFoundException $noAceFoundException) {
+            return false;
+        } catch (\RuntimeException $runtimeException) {
             return false;
         }
     }
@@ -225,7 +213,7 @@ class AclUser
      *
      * @return bool
      */
-    public function remove(int $attribute, $object, User $user = null)
+    public function remove(int $attribute, $object, User $user = null) :bool
     {
         if ($this->isValidAttribute($attribute) === false) {
             return false;
@@ -258,5 +246,118 @@ class AclUser
     private function isValidAttribute(int $attribute) :bool
     {
         return in_array($attribute, self::$maskAuth);
+    }
+
+    /**
+     * @param           $object
+     * @param User|null $user
+     *
+     * @throws AclNotFoundException
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     * @throws \InvalidArgumentException
+     * @throws \OutOfBoundsException
+     * @throws \RuntimeException
+     * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
+     * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
+     *
+     * @return bool
+     */
+    public function removeAllAttributes($object, User $user = null) :bool
+    {
+        $user = $this->getRightUser($user);
+
+        foreach (self::$maskAuth as $attribute) {
+            $this->remove($attribute, $object, $user);
+        }
+
+        return true;
+    }
+
+    /**
+     * @param AclInterface         $acl
+     * @param int                  $mask
+     * @param UserSecurityIdentity $sid
+     *
+     * @throws NoAceFoundException
+     * @throws \RuntimeException
+     *
+     * @return bool
+     */
+    private function isGrantedAcl(
+        AclInterface $acl,
+        int $mask,
+        UserSecurityIdentity $sid
+    ):bool {
+        try {
+            $aces = $acl->getObjectAces();
+
+            if ($aces === false) {
+                $aces = $acl->getClassAces();
+            }
+
+            return $this->hasSufficientPermissions($aces, $mask, $sid);
+        } catch (NoAceFoundException $noAceFoundException) {
+            $parentAcl = $acl->getParentAcl();
+
+            if ($acl->isEntriesInheriting() && $parentAcl !== null) {
+                return $parentAcl->isGranted([$mask], [$sid]);
+            }
+
+            throw $noAceFoundException;
+        }
+    }
+
+    /**
+     * @param array                $aces
+     * @param int                  $mask
+     * @param UserSecurityIdentity $sid
+     *
+     * @throws \RuntimeException
+     *
+     * @return bool
+     */
+    private function hasSufficientPermissions(
+        array $aces,
+        int $mask,
+        UserSecurityIdentity $sid
+    ):bool {
+        $firstRejectedAce = null;
+
+        foreach ($aces as $ace) {
+            if ($sid->equals($ace->getSecurityIdentity()) && $this->isAceApplicable($mask, $ace)) {
+                if ($ace->isGranting()) {
+                    return true;
+                }
+
+                break;
+            }
+        }
+
+        return false;
+    }
+
+    /**
+     * @param int            $requiredMask
+     * @param EntryInterface $ace
+     *
+     * @throws \RuntimeException
+     * @return bool
+     */
+    private function isAceApplicable(int $requiredMask, EntryInterface $ace) :bool
+    {
+        switch ($ace->getStrategy()) {
+            case self::ALL:
+                return $requiredMask <= $ace->getMask();
+            case self::ANY:
+                return 0 !== ($ace->getMask() & $requiredMask);
+            case self::EQUAL:
+                return $requiredMask === $ace->getMask();
+            default:
+                throw new \RuntimeException(
+                    sprintf('The strategy "%s" is not supported.', $ace->getStrategy())
+                );
+        }
     }
 }

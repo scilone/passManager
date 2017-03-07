@@ -5,3 +5,11 @@ services:
             - "@security.acl.provider"
             - "@security.authorization_checker"
             - "@security.token_storage"
+
+    scilone_acl.twig_extension:
+        class: Scilone\AclBundle\Twig\AclExtension
+        public: false
+        arguments:
+            - '@scilone_acl.user'
+        tags:
+            - { name: twig.extension }

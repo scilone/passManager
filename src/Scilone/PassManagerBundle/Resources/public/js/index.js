@@ -6,8 +6,8 @@ $(document).ready(function () {
 
 		//show password
 		if (elBtn.hasClass('glyphicon-eye-open')) {
-			if (elPassword.data('decrypt') == 0) {
-				getPassword(elFakePass, elPassword, elBtn, true);
+			if (elPassword.data('decrypt') === 0) {
+				getPassword(elPassword);
 			}
 
 			showPassword(elFakePass, elPassword, elBtn);
@@ -44,7 +44,7 @@ function showPassword(elFakePass, elPassword, elBtn){
 	elBtn.addClass('glyphicon-eye-close');
 }
 
-function getPassword(elFakePass, elPassword, elBtn, overlayEffect) {
+function getPassword(elPassword) {
 	$('#layoutLoading').attr('style', 'display:block;');
 
 	$.ajax({
@@ -52,8 +52,8 @@ function getPassword(elFakePass, elPassword, elBtn, overlayEffect) {
 		async: true,
 		url: Routing.generate(
 			'scilone_encryption_xhr_decrypt',
-			{'salt': elPassword.data('salt')}
-		) + '?text=' + elPassword.data('password'),
+			{'salt': elPassword.data('salt'), 'text':elPassword.data('password')}
+		),
 		success: function (msg) {
 			elPassword.data('decrypt', 1);
 			elPassword.html(msg);
