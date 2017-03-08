@@ -1,0 +1,5 @@
+mask:
+  view: View
+  edit: Edit
+  operator: Operator
+  master: Master

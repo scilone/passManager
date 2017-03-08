@@ -21,7 +21,7 @@ $(document).ready(function () {
 	});
 
 	$('.btn-rights').click(function () {
-		showModalRights();
+		getModalRights($(this).data('account'));
 	});
 
 	/*new Clipboard('.btn-copy', {
@@ -40,6 +40,25 @@ $(document).ready(function () {
 		}
 	});*/
 });
+
+function getModalRights(idAccount) {
+	showOverlay();
+
+	$.ajax({
+		method: "GET",
+		async: true,
+		url: Routing.generate(
+			'scilone_pass_manager_account_xhr_modal_right',
+			{'idAccount': idAccount}
+		),
+		success: function (msg) {
+			$('#modalRights .modal-body').append(msg);
+		}
+	}).done(function() {
+		hideOverlay();
+		showModalRights();
+	});
+}
 
 function showModalRights() {
 	$('#modalRights').modal('show');

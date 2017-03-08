@@ -85,31 +85,16 @@ class Check
      */
     public function getMaxGranted($object, User $user) :int
     {
-        try {
-            $objectIdentity   = ObjectIdentity::fromDomainObject($object);
-            $securityIdentity = UserSecurityIdentity::fromAccount($user);
-        } catch (\Exception $exception) {
-            return 0;
-        }
-
-        try {
-            $acl = $this->aclProvider->findAcl($objectIdentity, [$securityIdentity]);
-            $aces = $this->getAces($acl);
-        } catch (AclNotFoundException $aclNotFoundException) {
-            return 0;
-        } catch (\RuntimeException $runtimeException) {
-            return 0;
-        }
-
-        $maxMask = 0;
-
-        foreach ($aces as $ace) {
-            if ($ace->getMask() > $maxMask) {
-                $maxMask = $ace->getMask();
+        $maxGranted = 0;
+        foreach ($this->core::$maskAuth as $mask) {
+            if ($this->isGranted($mask, $object, $user) === true
+                && $mask > $maxGranted
+            ) {
+                $maxGranted = $mask;
             }
         }
 
-        return $maxMask;
+        return $maxGranted;
     }
 
     /**

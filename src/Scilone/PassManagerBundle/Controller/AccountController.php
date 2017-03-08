@@ -113,4 +113,21 @@ class AccountController extends Controller
             ['form' => $form->createView()]
         );
     }
+
+    public function xhrModalRightAction(int $idAccount)
+    {
+        $acl               = $this->get('scilone_acl.user.manager');
+        $em                = $this->getDoctrine()->getManager();
+        $repositoryAccount = $em->getRepository('ScilonePassManagerBundle:Account');
+        $repositoryUser    = $em->getRepository('ScilonePassManagerBundle:User');
+
+        return $this->render(
+            'ScilonePassManagerBundle:Account:modalRight.html.twig',
+            [
+                'account' => $repositoryAccount->find($idAccount),
+                'users'   => $repositoryUser->findAll(),
+                'acl'     => $acl
+            ]
+        );
+    }
 }
