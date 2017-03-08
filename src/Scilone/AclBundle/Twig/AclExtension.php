@@ -54,6 +54,6 @@ class AclExtension extends \Twig_Extension
      */
     public function getName() :string
     {
-        return 'encryption_extension';
+        return 'acl_extension';
     }
 }

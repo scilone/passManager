@@ -3,18 +3,13 @@
 namespace Scilone\AclBundle\Services\User;
 
 use Symfony\Component\Security\Acl\Dbal\MutableAclProvider;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
-use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
 use Symfony\Component\Security\Acl\Exception\NoAceFoundException;
 use Symfony\Component\Security\Acl\Model\AclInterface;
-use Symfony\Component\Security\Acl\Model\MutableAclInterface;
 use Scilone\PassManagerBundle\Entity\User;
 use Symfony\Component\Security\Acl\Model\EntryInterface;
-use Scilone\AclBundle\Services\User\Core;
 
 /**
  * Class Check
@@ -23,6 +18,10 @@ use Scilone\AclBundle\Services\User\Core;
  */
 class Check
 {
+    const EQUAL = 'equal';
+    const ALL   = 'all';
+    const ANY   = 'any';
+
     /**
      * @var MutableAclProvider
      */
@@ -33,16 +32,22 @@ class Check
      */
     private $core;
 
-
-    public function __construct(MutableAclProvider $aclProvider, Core $core) {
+    /**
+     * Check constructor.
+     *
+     * @param MutableAclProvider $aclProvider
+     * @param Core               $core
+     */
+    public function __construct(MutableAclProvider $aclProvider, Core $core)
+    {
         $this->aclProvider = $aclProvider;
-        $this->core = $core;
+        $this->core        = $core;
     }
 
     /**
-     * @param int       $attribute
-     * @param           $object
-     * @param User|null $user
+     * @param int  $attribute
+     * @param      $object
+     * @param User $user
      *
      * @return bool
      */
@@ -79,7 +84,6 @@ class Check
      *
      * @throws NoAceFoundException
      * @throws \RuntimeException
-     *
      * @return bool
      */
     private function isGrantedAcl(
@@ -140,16 +144,17 @@ class Check
      * @param EntryInterface $ace
      *
      * @throws \RuntimeException
+     *
      * @return bool
      */
     private function isAceApplicable(int $requiredMask, EntryInterface $ace) :bool
     {
         switch ($ace->getStrategy()) {
-            case $this->core::ALL:
+            case self::ALL:
                 return $requiredMask <= $ace->getMask();
-            case $this->core::ANY:
+            case self::ANY:
                 return 0 !== ($ace->getMask() & $requiredMask);
-            case $this->core::EQUAL:
+            case self::EQUAL:
                 return $requiredMask === $ace->getMask();
             default:
                 throw new \RuntimeException(

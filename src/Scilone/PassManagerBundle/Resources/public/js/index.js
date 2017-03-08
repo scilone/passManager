@@ -58,7 +58,7 @@ function getPassword(elPassword) {
 			elPassword.data('decrypt', 1);
 			elPassword.html(msg);
 		}
-	}).done(function (data) {
+	}).done(function() {
 		$('#layoutLoading').hide();
 	});
 }

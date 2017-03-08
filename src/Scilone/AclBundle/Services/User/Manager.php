@@ -2,22 +2,8 @@
 
 namespace Scilone\AclBundle\Services\User;
 
-use Symfony\Component\Security\Acl\Dbal\MutableAclProvider;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
-use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
-use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Symfony\Component\Security\Acl\Exception\NoAceFoundException;
-use Symfony\Component\Security\Acl\Model\AclInterface;
-use Symfony\Component\Security\Acl\Model\MutableAclInterface;
 use Scilone\PassManagerBundle\Entity\User;
-use Symfony\Component\Security\Acl\Model\EntryInterface;
-use Scilone\AclBundle\Services\User\Delete;
-use Scilone\AclBundle\Services\User\Core;
-use Scilone\AclBundle\Services\User\Check;
-use Scilone\AclBundle\Services\User\Grant;
 
 /**
  * Class Manager
@@ -58,9 +44,10 @@ class Manager
     /**
      * Manager constructor.
      *
-     * @param MutableAclProvider   $aclProvider
-     * @param AuthorizationChecker $authorizationChecker
-     * @param TokenStorage         $tokenStorage
+     * @param Core   $core
+     * @param Delete $delete
+     * @param Check  $check
+     * @param Grant  $grant
      */
     public function __construct(
         Core $core,
@@ -136,7 +123,6 @@ class Manager
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      * @throws \InvalidArgumentException
-     * @throws \OutOfBoundsException
      * @throws \RuntimeException
      * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
      * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
@@ -163,7 +149,6 @@ class Manager
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      * @throws \InvalidArgumentException
-     * @throws \OutOfBoundsException
      * @throws \RuntimeException
      * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
      * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException

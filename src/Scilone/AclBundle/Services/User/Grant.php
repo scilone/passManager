@@ -2,21 +2,15 @@
 
 namespace Scilone\AclBundle\Services\User;
 
-use Symfony\Component\Security\Acl\Dbal\MutableAclProvider;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
-use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Symfony\Component\Security\Acl\Exception\NoAceFoundException;
-use Symfony\Component\Security\Acl\Model\AclInterface;
-use Symfony\Component\Security\Acl\Model\MutableAclInterface;
 use Scilone\PassManagerBundle\Entity\User;
-use Symfony\Component\Security\Acl\Model\EntryInterface;
-use Scilone\AclBundle\Services\User\Core;
 
-
+/**
+ * Class Grant
+ *
+ * @package Scilone\AclBundle\Services\User
+ */
 class Grant
 {
     /**
@@ -24,7 +18,11 @@ class Grant
      */
     private $core;
 
-
+    /**
+     * Grant constructor.
+     *
+     * @param Core $core
+     */
     public function __construct(
         Core $core
     ) {
@@ -32,9 +30,9 @@ class Grant
     }
 
     /**
-     * @param int       $attribute
-     * @param           $object
-     * @param User|null $user
+     * @param int  $attribute
+     * @param      $object
+     * @param User $user
      *
      * @throws AclNotFoundException
      * @throws \Doctrine\DBAL\ConnectionException
@@ -51,7 +49,6 @@ class Grant
     {
         $acl = $this->core->getAcl($object);
 
-        // retrieving the security identity of the currently logged-in user
         $securityIdentity = UserSecurityIdentity::fromAccount($user);
 
         $acl->insertObjectAce($securityIdentity, $attribute);

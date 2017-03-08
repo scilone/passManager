@@ -2,19 +2,9 @@
 
 namespace Scilone\AclBundle\Services\User;
 
-use Symfony\Component\Security\Acl\Dbal\MutableAclProvider;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
-use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
-use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
 use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
-use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Symfony\Component\Security\Acl\Exception\NoAceFoundException;
-use Symfony\Component\Security\Acl\Model\AclInterface;
-use Symfony\Component\Security\Acl\Model\MutableAclInterface;
 use Scilone\PassManagerBundle\Entity\User;
-use Symfony\Component\Security\Acl\Model\EntryInterface;
-use Scilone\AclBundle\Services\User\Core;
 
 /**
  * Class Delete
@@ -28,7 +18,11 @@ class Delete
      */
     private $core;
 
-
+    /**
+     * Delete constructor.
+     *
+     * @param Core $core
+     */
     public function __construct(
         Core $core
     ) {
@@ -36,16 +30,15 @@ class Delete
     }
 
     /**
-     * @param int       $attribute
-     * @param           $object
-     * @param User|null $user
+     * @param int  $attribute
+     * @param      $object
+     * @param User $user
      *
      * @throws AclNotFoundException
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      * @throws \InvalidArgumentException
-     * @throws \OutOfBoundsException
      * @throws \RuntimeException
      * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
      * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
@@ -73,15 +66,14 @@ class Delete
     }
 
     /**
-     * @param           $object
-     * @param User|null $user
+     * @param      $object
+     * @param User $user
      *
      * @throws AclNotFoundException
      * @throws \Doctrine\DBAL\ConnectionException
      * @throws \Doctrine\DBAL\DBALException
      * @throws \Exception
      * @throws \InvalidArgumentException
-     * @throws \OutOfBoundsException
      * @throws \RuntimeException
      * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
      * @throws \Symfony\Component\Security\Acl\Exception\NotAllAclsFoundException
@@ -90,6 +82,7 @@ class Delete
      */
     public function removeAllAttributes($object, User $user) :bool
     {
+        /** @noinspection PhpUndefinedVariableInspection */
         foreach ($this->core::$maskAuth as $attribute) {
             $this->remove($attribute, $object, $user);
         }

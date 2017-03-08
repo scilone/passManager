@@ -3,17 +3,13 @@
 namespace Scilone\AclBundle\Services\User;
 
 use Symfony\Component\Security\Acl\Dbal\MutableAclProvider;
-use Symfony\Component\Security\Core\Authorization\AuthorizationChecker;
 use Symfony\Component\Security\Core\Authentication\Token\Storage\TokenStorage;
 use Symfony\Component\Security\Acl\Domain\ObjectIdentity;
-use Symfony\Component\Security\Acl\Domain\UserSecurityIdentity;
 use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Symfony\Component\Security\Acl\Exception\NoAceFoundException;
 use Symfony\Component\Security\Acl\Model\AclInterface;
 use Symfony\Component\Security\Acl\Model\MutableAclInterface;
 use Scilone\PassManagerBundle\Entity\User;
-use Symfony\Component\Security\Acl\Model\EntryInterface;
 
 /**
  * Class Core
@@ -30,10 +26,6 @@ class Core
     const MASK_OPERATOR = MaskBuilder::MASK_OPERATOR;
     const MASK_MASTER   = MaskBuilder::MASK_MASTER;
     const MASK_OWNER    = MaskBuilder::MASK_OWNER;
-
-    const EQUAL = 'equal';
-    const ALL   = 'all';
-    const ANY   = 'any';
 
     /**
      * @var array
@@ -118,6 +110,14 @@ class Core
         return in_array($attribute, self::$maskAuth);
     }
 
+    /**
+     * @param MutableAclInterface $acl
+     *
+     * @throws \Doctrine\DBAL\ConnectionException
+     * @throws \Doctrine\DBAL\DBALException
+     * @throws \Exception
+     * @throws \InvalidArgumentException
+     */
     public function updateAcl(MutableAclInterface $acl)
     {
         return $this->aclProvider->updateAcl($acl);
