@@ -1,6 +1,14 @@
 services:
-    scilone_pass_manager.twig_extension:
+    scilone_pass_manager.twig_extension.navbar:
         class: Scilone\PassManagerBundle\Twig\NavbarExtension
         public: false
         tags:
             - { name: twig.extension }
+
+    scilone_pass_manager.twig_extension.rights:
+            class: Scilone\PassManagerBundle\Twig\RightsExtension
+            public: false
+            arguments:
+                - '@scilone_acl.user.manager'
+            tags:
+                - { name: twig.extension }

@@ -73,6 +73,7 @@ class Core
     public function getRightUser(User $user = null) :User
     {
         if ($user === null) {
+            /** @noinspection PhpUndefinedMethodInspection */
             return $this->tokenStorage->getToken()->getUser();
         }
 

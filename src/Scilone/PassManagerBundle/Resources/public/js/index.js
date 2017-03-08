@@ -20,6 +20,10 @@ $(document).ready(function () {
 		}
 	});
 
+	$('.btn-rights').click(function () {
+		showModalRights();
+	});
+
 	/*new Clipboard('.btn-copy', {
 		text: function(trigger) {
 			console.warn('copy!');
@@ -37,6 +41,10 @@ $(document).ready(function () {
 	});*/
 });
 
+function showModalRights() {
+	$('#modalRights').modal('show');
+}
+
 function showPassword(elFakePass, elPassword, elBtn){
 	elFakePass.hide();
 	elPassword.show();
@@ -44,8 +52,16 @@ function showPassword(elFakePass, elPassword, elBtn){
 	elBtn.addClass('glyphicon-eye-close');
 }
 
-function getPassword(elPassword) {
+function showOverlay(){
 	$('#layoutLoading').attr('style', 'display:block;');
+}
+
+function hideOverlay(){
+	$('#layoutLoading').hide();
+}
+
+function getPassword(elPassword) {
+	showOverlay();
 
 	$.ajax({
 		method: "GET",
@@ -59,6 +75,6 @@ function getPassword(elPassword) {
 			elPassword.html(msg);
 		}
 	}).done(function() {
-		$('#layoutLoading').hide();
+		hideOverlay();
 	});
 }

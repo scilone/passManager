@@ -80,6 +80,19 @@ class Manager
     }
 
     /**
+     * @param           $object
+     * @param User|null $user
+     *
+     * @return int
+     */
+    public function getMaxGranted($object, User $user = null) :int
+    {
+        $user = $this->core->getRightUser($user);
+
+        return $this->check->getMaxGranted($object, $user);
+    }
+
+    /**
      * @param int       $attribute
      * @param           $object
      * @param User|null $user

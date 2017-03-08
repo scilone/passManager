@@ -78,6 +78,41 @@ class Check
     }
 
     /**
+     * @param      $object
+     * @param User $user
+     *
+     * @return int
+     */
+    public function getMaxGranted($object, User $user) :int
+    {
+        try {
+            $objectIdentity   = ObjectIdentity::fromDomainObject($object);
+            $securityIdentity = UserSecurityIdentity::fromAccount($user);
+        } catch (\Exception $exception) {
+            return 0;
+        }
+
+        try {
+            $acl = $this->aclProvider->findAcl($objectIdentity, [$securityIdentity]);
+            $aces = $this->getAces($acl);
+        } catch (AclNotFoundException $aclNotFoundException) {
+            return 0;
+        } catch (\RuntimeException $runtimeException) {
+            return 0;
+        }
+
+        $maxMask = 0;
+
+        foreach ($aces as $ace) {
+            if ($ace->getMask() > $maxMask) {
+                $maxMask = $ace->getMask();
+            }
+        }
+
+        return $maxMask;
+    }
+
+    /**
      * @param AclInterface         $acl
      * @param int                  $mask
      * @param UserSecurityIdentity $sid
@@ -92,11 +127,7 @@ class Check
         UserSecurityIdentity $sid
     ):bool {
         try {
-            $aces = $acl->getObjectAces();
-
-            if ($aces === false) {
-                $aces = $acl->getClassAces();
-            }
+            $aces = $this->getAces($acl);
 
             return $this->hasSufficientPermissions($aces, $mask, $sid);
         } catch (NoAceFoundException $noAceFoundException) {
@@ -108,6 +139,22 @@ class Check
 
             throw $noAceFoundException;
         }
+    }
+
+    /**
+     * @param AclInterface $acl
+     *
+     * @return array
+     */
+    private function getAces(AclInterface $acl) :array
+    {
+        $aces = $acl->getObjectAces();
+
+        if ($aces === false) {
+            $aces = $acl->getClassAces();
+        }
+
+        return $aces;
     }
 
     /**

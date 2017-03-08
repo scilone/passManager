@@ -35,15 +35,17 @@ class AccountController extends Controller
             return $this->redirectToRoute('scilone_encryption_set_master_key');
         }
 
-        $repositoryAccount =
-            $this
-                ->getDoctrine()
-                ->getManager()
-                ->getRepository('ScilonePassManagerBundle:Account');
+        $em = $this->getDoctrine()->getManager();
+
+        $repositoryAccount = $em->getRepository('ScilonePassManagerBundle:Account');
+        $repositoryUser    = $em->getRepository('ScilonePassManagerBundle:User');
 
         return $this->render(
             'ScilonePassManagerBundle:Account:index.html.twig',
-            ['accounts'=>$repositoryAccount->findAll()]
+            [
+                'accounts' => $repositoryAccount->findAll(),
+                'users'    => $repositoryUser->findAll()
+            ]
         );
     }
 

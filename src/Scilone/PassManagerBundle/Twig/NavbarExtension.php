@@ -4,6 +4,7 @@ namespace Scilone\PassManagerBundle\Twig;
 
 /**
  * Class NavbarExtension
+ *
  * @package Scilone\PassManagerBundle\Twig
  */
 class NavbarExtension extends \Twig_Extension

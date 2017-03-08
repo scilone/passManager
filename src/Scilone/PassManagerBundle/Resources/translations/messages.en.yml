@@ -1,15 +1,30 @@
 account:
-  name: name
-  username: username
-  password: password
-  url: url
-  notes: notes
-  rights: rights
+  name: Name
+  username: Username
+  password: Password
+  url: URL
+  notes: Notes
+  rights: Rights
+
 form:
   account:
-    name: name
-    username: username
-    password: password
-    url: url
-    notes: notes
-    save: save
+    name: Name
+    username: Username
+    password: Password
+    url: URL
+    notes: Notes
+    save: Save
+
+modal:
+  account:
+    right:
+      title: Give rights
+      close: Close
+      save: Save
+      tab:
+        users: Users
+        roles: Roles
+
+user:
+  name: Name
+  right: Right
