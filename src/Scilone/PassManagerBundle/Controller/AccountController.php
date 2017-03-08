@@ -96,7 +96,7 @@ class AccountController extends Controller
             $em->persist($account);
             $em->flush();
 
-            $acl = $this->get('scilone_acl.user');
+            $acl = $this->get('scilone_acl.user.manager');
             $acl->grant($acl::MASK_OWNER, $account);
 
             return $this->redirectToRoute(

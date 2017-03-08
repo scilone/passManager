@@ -2,7 +2,7 @@
 
 namespace Scilone\AclBundle\Twig;
 
-use Scilone\AclBundle\Services\AclUser;
+use Scilone\AclBundle\Services\User\Manager;
 use Scilone\PassManagerBundle\Entity\User;
 
 /**
@@ -13,18 +13,18 @@ use Scilone\PassManagerBundle\Entity\User;
 class AclExtension extends \Twig_Extension
 {
     /**
-     * @var AclUser
+     * @var Manager
      */
-    private $aclUser;
+    private $manager;
 
     /**
      * AclExtension constructor.
      *
-     * @param AclUser $aclUser
+     * @param Manager $manager
      */
-    public function __construct(AclUser $aclUser)
+    public function __construct(Manager $manager)
     {
-        $this->aclUser = $aclUser;
+        $this->manager = $manager;
     }
 
     /**
@@ -46,7 +46,7 @@ class AclExtension extends \Twig_Extension
      */
     public function isGrantedFilter(int $attribute, $object, User $user = null) :bool
     {
-        return $this->aclUser->isGranted($attribute, $object, $user);
+        return $this->manager->isGranted($attribute, $object, $user);
     }
 
     /**

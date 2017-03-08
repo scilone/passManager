@@ -1,15 +1,38 @@
 services:
-    scilone_acl.user:
-        class: Scilone\AclBundle\Services\AclUser
+    scilone_acl.user.manager:
+        class: Scilone\AclBundle\Services\User\Manager
+        arguments:
+            - "@scilone_acl.user.core"
+            - "@scilone_acl.user.delete"
+            - "@scilone_acl.user.check"
+            - "@scilone_acl.user.grant"
+
+    scilone_acl.user.core:
+        class: Scilone\AclBundle\Services\User\Core
         arguments:
             - "@security.acl.provider"
-            - "@security.authorization_checker"
             - "@security.token_storage"
+
+    scilone_acl.user.delete:
+        class: Scilone\AclBundle\Services\User\Delete
+        arguments:
+            - "@scilone_acl.user.core"
+
+    scilone_acl.user.check:
+            class: Scilone\AclBundle\Services\User\Check
+            arguments:
+                - "@security.acl.provider"
+                - "@scilone_acl.user.core"
+
+    scilone_acl.user.grant:
+                class: Scilone\AclBundle\Services\User\Grant
+                arguments:
+                    - "@scilone_acl.user.core"
 
     scilone_acl.twig_extension:
         class: Scilone\AclBundle\Twig\AclExtension
         public: false
         arguments:
-            - '@scilone_acl.user'
+            - '@scilone_acl.user.manager'
         tags:
             - { name: twig.extension }

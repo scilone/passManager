@@ -16,7 +16,7 @@
         </thead>
         <tbody>
             {% for account in accounts %}
-                {% if isAclGranted(constant('Scilone\\AclBundle\\Services\\AclUser::MASK_VIEW'), account) %}
+                {% if isAclGranted(constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_VIEW'), account) %}
                     <tr>
                         <td>{{ account.name }}</td>
                         <td>{{ account.userName }}</td>
