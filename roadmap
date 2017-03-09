@@ -1,4 +1,6 @@
-ACL group
-ACL cache
-copy to clipboard passwords
 account categories
+ACL user
+ACL group
+copy to clipboard passwords
+ACL cache
+Force HTTPS
