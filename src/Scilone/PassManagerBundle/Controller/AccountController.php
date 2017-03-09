@@ -5,6 +5,7 @@ namespace Scilone\PassManagerBundle\Controller;
 use Symfony\Bundle\FrameworkBundle\Controller\Controller;
 use Scilone\PassManagerBundle\Entity\Account;
 use Scilone\PassManagerBundle\Form\AccountType;
+use Symfony\Component\HttpFoundation\JsonResponse;
 use Symfony\Component\HttpFoundation\Request;
 use Symfony\Component\HttpFoundation\RedirectResponse;
 use Symfony\Component\HttpFoundation\Response;
@@ -129,5 +130,43 @@ class AccountController extends Controller
                 'acl'     => $acl
             ]
         );
+    }
+
+    public function xhrFormChangeRightsUserAction(Request $request)
+    {
+        $idUsers    = (array) $request->request->get('idUser');
+        $usersRight = (array) $request->request->get('rightUser');
+        $idAccount  = $request->request->getInt('idAccount');
+
+        $acl               = $this->get('scilone_acl.user.manager');
+        $em                = $this->getDoctrine()->getManager();
+        $repositoryAccount = $em->getRepository('ScilonePassManagerBundle:Account');
+        $repositoryUser    = $em->getRepository('ScilonePassManagerBundle:User');
+
+        $account = $repositoryAccount->find($idAccount);
+
+        if ($acl->isGranted($acl::MASK_MASTER, $account) === false) {
+            return new JsonResponse(false, Response::HTTP_FORBIDDEN);
+        }
+
+        $error = 0;
+        foreach ($idUsers as $key => $idUser) {
+            $user = $repositoryUser->find($idUser);
+            $attributeUser = (int) $usersRight[$key];
+
+            if ($attributeUser === 0) {
+                if ($acl->removeAllAttributes($account, $user) === false) {
+                    ++ $error;
+                }
+            } elseif ($acl->grant($attributeUser, $account, $user) === false) {
+                ++$error;
+            }
+        }
+
+        if ($error > 0) {
+            return new JsonResponse(['error' => $error], Response::HTTP_INTERNAL_SERVER_ERROR);
+        }
+
+        return new JsonResponse(true);
     }
 }

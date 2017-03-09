@@ -42,6 +42,8 @@ class AclExtension extends \Twig_Extension
      * @param           $object
      * @param User|null $user
      *
+     * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
+     *
      * @return bool
      */
     public function isGrantedFilter(int $attribute, $object, User $user = null) :bool

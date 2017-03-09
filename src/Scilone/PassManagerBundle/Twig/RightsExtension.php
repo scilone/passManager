@@ -34,8 +34,8 @@ class RightsExtension extends \Twig_Extension
     {
         return [
             new \Twig_SimpleFunction(
-                'getSelectUserRights',
-                [$this, 'getSelectUserRightsFilter'],
+                'isAllowedToGrant',
+                [$this, 'isAllowedToGrantFilter'],
                 array('is_safe' => array('html'))
             )
         ];
@@ -44,12 +44,13 @@ class RightsExtension extends \Twig_Extension
     /**
      * @param User $user
      *
-     * @return string
+     * @throws \Symfony\Component\Security\Acl\Exception\InvalidDomainObjectException
+     *
+     * @return bool
      */
-    public function getSelectUserRightsFilter(User $user) :string
+    public function isAllowedToGrantFilter(User $user) :bool
     {
-        return 1;
-        //$this->manager->isGranted($this->manager::)
+        return $this->manager->isGranted($this->manager::MASK_MASTER);
     }
 
     /**

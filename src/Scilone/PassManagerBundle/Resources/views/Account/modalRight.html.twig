@@ -1,4 +1,4 @@
-<div id="modalRight{{ account.id }}">
+<div id="modalRight{{ account.id }}" class="modalRight">
     <!-- Nav tabs -->
     <ul class="nav nav-tabs" role="tablist">
         <li role="presentation" class="active">
@@ -14,59 +14,69 @@
     </ul>
 
     <!-- Tab panes -->
-    <div class="tab-content">
-        <div role="tabpanel" class="tab-pane active" id="usersRights">
-            <table class="table table-striped table-hover">
-                <thead>
-                <tr>
-                    <th>{{ 'user.name'|trans }}</th>
-                    <th>{{ 'user.right'|trans }}</th>
-                </tr>
-                </thead>
-                <tbody>
-                {% for user in users %}
-                    {% set maxGranted = acl.maxGranted(account, user) %}
-
+    <form>
+        <input type="hidden" name="idAccount" value="{{ account.id }}">
+        <div class="tab-content">
+            <div role="tabpanel" class="tab-pane active" id="usersRights">
+                <table class="table table-striped table-hover">
+                    <thead>
                     <tr>
-                        <td>{{ user.username }}</td>
-                        <td>
-                            <select class="form-control">
-                                <option></option>
-                                <option
-                                        {% if maxGranted == constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_VIEW') %}
-                                            selected
-                                        {% endif %}
-                                >
-                                    {{ "mask.view"|trans }}
-                                </option>
-                                <option
-                                        {% if maxGranted == constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_EDIT') %}
-                                            selected
-                                        {% endif %}
-                                >
-                                    {{ "mask.edit"|trans }}
-                                </option>
-                                <option
-                                        {% if maxGranted == constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_OPERATOR') %}
-                                            selected
-                                        {% endif %}
-                                >
-                                    {{ "mask.operator"|trans }}
-                                </option>
-                                <option
-                                        {% if maxGranted == constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_MASTER') %}
-                                            selected
-                                        {% endif %}
-                                >
-                                    {{ "mask.master"|trans }}
-                                </option>
-                            </select>
-                        </td>
+                        <th>{{ 'user.name'|trans }}</th>
+                        <th>{{ 'user.right'|trans }}</th>
                     </tr>
-                {% endfor %}
-                </tbody>
-            </table>
+                    </thead>
+                    <tbody>
+                        {% for user in users %}
+                            {% if app.user != user %}
+                                {% set maxGranted = acl.maxGranted(account, user) %}
+
+                                <tr>
+                                    <td>{{ user.username }}</td>
+                                    <td>
+                                        <input type="hidden" name="idUser[]" value="{{ user.id }}">
+                                        <select class="form-control" name="rightUser[]">
+                                            <option value="0"></option>
+                                            <option
+                                                    value="{{ constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_VIEW') }}"
+                                                    {% if maxGranted == constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_VIEW') %}
+                                                        selected
+                                                    {% endif %}
+                                            >
+                                                {{ "mask.view"|trans }}
+                                            </option>
+                                            <option
+                                                    value="{{ constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_EDIT') }}"
+                                                    {% if maxGranted == constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_EDIT') %}
+                                                        selected
+                                                    {% endif %}
+                                            >
+                                                {{ "mask.edit"|trans }}
+                                            </option>
+                                            <option
+                                                    value="{{ constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_OPERATOR') }}"
+                                                    {% if maxGranted == constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_OPERATOR') %}
+                                                        selected
+                                                    {% endif %}
+                                            >
+                                                {{ "mask.operator"|trans }}
+                                            </option>
+                                            <option
+                                                    value="{{ constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_MASTER') }}"
+                                                    {% if maxGranted == constant('Scilone\\AclBundle\\Services\\User\\Manager::MASK_MASTER') %}
+                                                        selected
+                                                    {% endif %}
+                                            >
+                                                {{ "mask.master"|trans }}
+                                            </option>
+                                        </select>
+                                    </td>
+                                </tr>
+                            {% endif %}
+                        {% endfor %}
+                    </tbody>
+                </table>
+            </div>
+            <div role="tabpanel" class="tab-pane" id="roleRights">Soon ...</div>
         </div>
-        <div role="tabpanel" class="tab-pane" id="roleRights">Soon ...</div>
-    </div>
+    </form>
 </div>

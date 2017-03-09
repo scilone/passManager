@@ -110,13 +110,13 @@ class Manager
      */
     public function grant(int $attribute, $object, User $user = null) :bool
     {
+        dump($attribute);
         if ($this->core->isValidAttribute($attribute) === false) {
             return false;
         }
-
         $user = $this->core->getRightUser($user);
 
-        if ($this->check->isGranted($attribute, $object, $user) === true) {
+        if ($this->check->getMaxGranted($object, $user) === $attribute) {
             return true;
         }
 
@@ -171,6 +171,10 @@ class Manager
     public function removeAllAttributes($object, User $user = null) :bool
     {
         $user = $this->core->getRightUser($user);
+
+        if ($this->getMaxGranted($object, $user ) === 0) {
+            return true;
+        }
 
         return $this->delete->removeAllAttributes($object, $user);
     }

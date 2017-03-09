@@ -6,6 +6,12 @@ scilone_pass_manager_account_new:
     path:     /account/new
     defaults: { _controller: ScilonePassManagerBundle:Account:add }
 
+scilone_pass_manager_account_xhr_form_rights:
+    path:     /xhr/account/form/right
+    defaults: { _controller: ScilonePassManagerBundle:Account:xhrFormChangeRightsUser }
+    options:
+        expose: true
+
 scilone_pass_manager_account_xhr_modal_right:
     path:     /xhr/account/modal/right/{idAccount}
     defaults: { _controller: ScilonePassManagerBundle:Account:xhrModalRight }

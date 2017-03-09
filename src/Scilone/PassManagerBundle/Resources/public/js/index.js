@@ -21,7 +21,18 @@ $(document).ready(function () {
 	});
 
 	$('.btn-rights').click(function () {
-		getModalRights($(this).data('account'));
+		hideModalsRight();
+
+		var idAccount = $(this).data('account');
+		if ($('#modalRight' + idAccount).length === 0) {
+			getModalRight($(this).data('account'));
+		} else {
+			showModalRights(idAccount);
+		}
+	});
+	
+	$('#modalAccountRightSave').click(function () {
+		saveCurrentRights();
 	});
 
 	/*new Clipboard('.btn-copy', {
@@ -41,7 +52,19 @@ $(document).ready(function () {
 	});*/
 });
 
-function getModalRights(idAccount) {
+function saveCurrentRights() {
+	$.ajax({
+		method: "POST",
+		url: Routing.generate('scilone_pass_manager_account_xhr_form_rights'),
+		data: $('.modalRight:visible form').serialize()
+	});
+}
+
+function hideModalsRight(){
+	$('.modalRight').hide();
+}
+
+function getModalRight(idAccount) {
 	showOverlay();
 
 	$.ajax({
@@ -56,11 +79,12 @@ function getModalRights(idAccount) {
 		}
 	}).done(function() {
 		hideOverlay();
-		showModalRights();
+		showModalRights(idAccount);
 	});
 }
 
-function showModalRights() {
+function showModalRights(idAccount) {
+	$('#modalRight' + idAccount).show();
 	$('#modalRights').modal('show');
 }
 
