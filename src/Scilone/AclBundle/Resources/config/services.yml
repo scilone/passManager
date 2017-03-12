@@ -19,15 +19,25 @@ services:
             - "@scilone_acl.user.core"
 
     scilone_acl.user.check:
-            class: Scilone\AclBundle\Services\User\Check
-            arguments:
-                - "@security.acl.provider"
-                - "@scilone_acl.user.core"
+        class: Scilone\AclBundle\Services\User\Check
+        arguments:
+            - "@security.acl.provider"
+            - "@scilone_acl.user.core"
 
     scilone_acl.user.grant:
-                class: Scilone\AclBundle\Services\User\Grant
-                arguments:
-                    - "@scilone_acl.user.core"
+        class: Scilone\AclBundle\Services\User\Grant
+        arguments:
+            - "@scilone_acl.user.core"
+
+    scilone_acl.role.manager:
+        class: Scilone\AclBundle\Services\Role\Manager
+        arguments:
+            - "@scilone_acl.role.grant"
+
+    scilone_acl.role.grant:
+        class: Scilone\AclBundle\Services\Role\Grant
+        arguments:
+            - "@doctrine.orm.entity_manager"
 
     scilone_acl.twig_extension:
         class: Scilone\AclBundle\Twig\AclExtension

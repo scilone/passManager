@@ -41,6 +41,10 @@ class AccountController extends Controller
         $repositoryAccount = $em->getRepository('ScilonePassManagerBundle:Account');
         $repositoryUser    = $em->getRepository('ScilonePassManagerBundle:User');
 
+        $aclRole = $this->get('scilone_acl.role.manager');
+        $aclRole->grant($aclRole::MASK_VIEW, $repositoryAccount->find(1), 'ROLE_ADMIN');
+        exit;
+
         return $this->render(
             'ScilonePassManagerBundle:Account:index.html.twig',
             [

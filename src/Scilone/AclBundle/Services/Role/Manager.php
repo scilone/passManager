@@ -1,40 +1,24 @@
 <?php
 
-namespace Scilone\AclBundle\Services\User;
+namespace Scilone\AclBundle\Services\Role;
 
-use Symfony\Component\Security\Acl\Exception\AclNotFoundException;
-use Scilone\PassManagerBundle\Entity\User;
+use Symfony\Component\Security\Acl\Permission\MaskBuilder;
 
 /**
  * Class Manager
  *
- * @package Scilone\AclBundle\Services\User
+ * @package Scilone\AclBundle\Services\Role
  */
 class Manager
 {
-    const MASK_VIEW     = Core::MASK_VIEW;
-    const MASK_CREATE   = Core::MASK_CREATE;
-    const MASK_EDIT     = Core::MASK_EDIT;
-    const MASK_DELETE   = Core::MASK_DELETE;
-    const MASK_UNDELETE = Core::MASK_UNDELETE;
-    const MASK_OPERATOR = Core::MASK_OPERATOR;
-    const MASK_MASTER   = Core::MASK_MASTER;
-    const MASK_OWNER    = Core::MASK_OWNER;
-
-    /**
-     * @var Delete
-     */
-    private $delete;
-
-    /**
-     * @var Core
-     */
-    private $core;
-
-    /**
-     * @var Check
-     */
-    private $check;
+    const MASK_VIEW     = MaskBuilder::MASK_VIEW;
+    const MASK_CREATE   = MaskBuilder::MASK_CREATE;
+    const MASK_EDIT     = MaskBuilder::MASK_EDIT;
+    const MASK_DELETE   = MaskBuilder::MASK_DELETE;
+    const MASK_UNDELETE = MaskBuilder::MASK_UNDELETE;
+    const MASK_OPERATOR = MaskBuilder::MASK_OPERATOR;
+    const MASK_MASTER   = MaskBuilder::MASK_MASTER;
+    const MASK_OWNER    = MaskBuilder::MASK_OWNER;
 
     /**
      * @var Grant
@@ -44,20 +28,14 @@ class Manager
     /**
      * Manager constructor.
      *
-     * @param Core   $core
-     * @param Delete $delete
-     * @param Check  $check
-     * @param Grant  $grant
+     * @param Grant $grant
      */
     public function __construct(
-        Core $core,
-        Delete $delete,
-        Check $check,
         Grant $grant
     ) {
-        $this->delete = $delete;
-        $this->core   = $core;
-        $this->check  = $check;
+        //$this->delete = $delete;
+        //$this->core   = $core;
+        //$this->check  = $check;
         $this->grant  = $grant;
     }
 
@@ -108,9 +86,9 @@ class Manager
      *
      * @return bool
      */
-    public function grant(int $attribute, $object, User $user = null) :bool
+    public function grant(int $attribute, $object, string $role = null) :bool
     {
-        if ($this->core->isValidAttribute($attribute) === false) {
+        /*if ($this->core->isValidAttribute($attribute) === false) {
             return false;
         }
         $user = $this->core->getRightUser($user);
@@ -120,9 +98,9 @@ class Manager
         }
 
         // only 1 attribute at the same time for object/user
-        $this->delete->removeAllAttributes($object, $user);
+        $this->delete->removeAllAttributes($object, $user);*/
 
-        return $this->grant->grant($attribute, $object, $user);
+        return $this->grant->grant($attribute, $object, $role);
     }
 
     /**
